@@ -1,0 +1,12 @@
+services:
+  db:
+    container_name: postgres
+    image: postgres
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - PGDATA=/data/postgres
+    volumes:
+      - db:/data/postgres
+    ports:
+      - "5332:5432"
