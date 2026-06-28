@@ -5,8 +5,14 @@ services:
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
       - PGDATA=/data/postgres
     volumes:
       - db:/data/postgres
     ports:
       - "5332:5432"
+
+
+
+volumes:
+  db:
