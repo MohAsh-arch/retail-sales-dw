@@ -17,7 +17,7 @@ The BI team has handed you a list of questions they need to answer regularly. Yo
 
 ## Phase 1 : OLTP Design
 
-![alt text](images/oltp_erd.png)
+![alt text](images/OLTP_ERD.png)
 
 1. The first decision after creating the `order` table was to split it into `order` and `order_items` because one order could contain many items and to achieve the 3NF.
 2. You will notice that there are two columns for price: one in the `order_items` table -> `unit_price`, and another in the `product` table -> `price`, because the table needs to record the instant price the customer bought at, and the price of the product can change later.

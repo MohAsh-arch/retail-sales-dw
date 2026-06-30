@@ -1,0 +1,40 @@
+CREATE TABLE regions (
+    region_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY, 
+    name VARCHAR(100) UNIQUE NOT NULL
+)
+
+
+CREATE TABLE category (
+    category_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY, 
+    category_name VARCHAR(100) UNIQUE NOT NULL
+)
+
+CREATE TABLE customer (
+    customer_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY, 
+    name VARCHAR(255) NOT NULL , 
+    phone VARCHAR(30) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL, 
+    address VARCHAR(255)
+)
+
+
+CREATE TABLE branch (
+    branch_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    city VARCHAR(100) NOT NULL,
+    region_id INT REFERENCES regions(region_id) NOT NULL
+)
+
+
+CREATE TABLE product (
+    product_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    category_id INT REFERENCES category(category_id) NOT NULL, 
+    name VARCHAR(255) UNIQUE NOT NULL ,
+    price DECIMAL(10,2) NOT NULL CHECK(price > 0)
+)
+
+
+CREATE TABLE employee (
+    employee_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    name VARCHAR(255) 
+
+)
