@@ -28,7 +28,16 @@ The BI team has handed you a list of questions they need to answer regularly. Yo
 
 1. Docker: it's a container service that makes the application portable to be reused on any other machine.
 2. PostgreSQL: will be great for OLTP because it supports ACID compliance for transactional integrity. ACID stands for:
-- Atomicity: if two customers try to buy the last item at the same time, the database will not allow it.
-- Consistency: all data follows the same rules and is consistent, like a price can't be below zero.
-- Isolation: when two operations happen at the same time, they should be separated, or rather isolated, to not affect each other.
-- Durability: what if the system shuts down? What happens to the data? It will be safe because it is saved on the hard disk.
+    - Atomicity: if two customers try to buy the last item at the same time, the database will not allow it.
+    - Consistency: all data follows the same rules and is consistent, like a price can't be below zero.
+    - Isolation: when two operations happen at the same time, they should be separated, or rather isolated, to not affect each other.
+    - Durability: what if the system shuts down? What happens to the data? It will be safe because it is saved on the hard disk.
+
+## Synthetic data generation 
+ - all the data metrics were done by reasonable assumptions under ambiguity because this not a real data set .
+ - Customers: ~10,000
+ - Products: ~500 -> this to randomaly makes some products statiscally be zero in some branches
+ - Regions: 10 this was reasonalbe number of retail chain regions
+ - Branches: 30-50 (3-5 per region) -> to answer ranking question in analysis
+ - Employees: 15-20 per branch (~500-1000 total), only some appear as sales reps in orders , i assume only those are sales rep. 
+ - Orders: spanning ~1 year
