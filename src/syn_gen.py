@@ -149,8 +149,9 @@ if empty_check(conn, cur, 'product'):
     insertion(conn , cur , 'product', 'category_id , name , price' , product_insert_tuples , 'product_id',on_conflict=True,conflict_column='name')
 
 #--- customer insertion ---
-customer_insert_tuples = []
+
 if empty_check(conn,cur,'customer'):
+    customer_insert_tuples = []
     for i in range (10_500):
         first_name = fake.first_name()
         last_name = fake.last_name()
@@ -160,6 +161,27 @@ if empty_check(conn,cur,'customer'):
         customer_insert_tuples.append((first_name,last_name,phone,email,address))
     customer_insert_column = 'first_name , last_name, phone, email, address'
     insertion(conn ,cur, 'customer', customer_insert_column , customer_insert_tuples, 'customer_id', on_conflict=True, conflict_column='email' )
+
+
+#--- employee insertion ---
+
+if empty_check(conn,cur,'employee'): 
+    employee_insert_tuples = []
+    cur.execute('SELECT branch_id FROM branch')
+    branch_id_tuples = cur.fetchall()
+    branch_id_list = [id[0] for id in branch_id_tuples]
+
+    for id in branch_id_list:
+        no_of_emp = random.randint(15,20)
+        for i in range(no_of_emp):
+            first_name = fake.first_name()
+            last_name = fake.last_name()
+            email = fake.email()
+            branch_emp_id = id
+            employee_insert_tuples.append((first_name,last_name,email,branch_emp_id))
+
+    employee_insert_column = 'first_name,last_name,email,branch_id'
+    insertion(conn ,cur, 'employee', employee_insert_column , employee_insert_tuples, 'employee_id', on_conflict=True, conflict_column='email' )
 
 
 
