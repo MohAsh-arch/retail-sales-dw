@@ -8,7 +8,8 @@ from faker_commerce import Provider
 
 
 
-
+random.seed(42)
+Faker.seed(42)
 
 load_dotenv()
 
@@ -146,5 +147,20 @@ if empty_check(conn, cur, 'product'):
         product_insert_tuples.append((prod_categ,prod_name,prod_price))
 
     insertion(conn , cur , 'product', 'category_id , name , price' , product_insert_tuples , 'product_id',on_conflict=True,conflict_column='name')
+
+#--- customer insertion ---
+customer_insert_tuples = []
+if empty_check(conn,cur,'customer'):
+    for i in range (10_500):
+        first_name = fake.first_name()
+        last_name = fake.last_name()
+        phone = fake.phone_number()
+        email = fake.email()
+        address = fake.address()
+        customer_insert_tuples.append((first_name,last_name,phone,email,address))
+    customer_insert_column = 'first_name , last_name, phone, email, address'
+    insertion(conn ,cur, 'customer', customer_insert_column , customer_insert_tuples, 'customer_id', on_conflict=True, conflict_column='email' )
+
+
 
 conn.commit() # saving the changes
