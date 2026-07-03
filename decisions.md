@@ -41,3 +41,12 @@ The BI team has handed you a list of questions they need to answer regularly. Yo
  - Branches: 30-50 (3-5 per region) -> to answer ranking question in analysis
  - Employees: 15-20 per branch (~500-1000 total), only some appear as sales reps in orders , i assume only those are sales rep. 
  - Orders: spanning ~1 year
+
+
+### syn_gen.py -> Generation Script
+
+- You will notice first that regions and categories are fixed, which is intentional, as I chose 10 regions and 12 categories in the design.
+- The `insertion` function is a universal function used to insert one or more columns. Just make sure they are comma-separated to fit the query, which led us to add the `on_conflict` parameter because some tables, such as `branch`, allow duplicates.
+- If we use the `insertion` function multiple times on the same table, such as `branch`, the number of branches (e.g., 30–50) will increase each time the script is run. To prevent this, I created the `empty_check` function, which inserts data into a table only when it is empty.
+- During `branch` insertion, we needed the `region_city_map` to determine which city corresponds to a specific region. This cannot be generated randomly because it would break consistency. We then map the city to its corresponding ID, which acts as the foreign key in the `branch` table, and finally format it into the branch insertion tuple using random generation.
+
