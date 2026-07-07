@@ -15,7 +15,7 @@ The BI team has handed you a list of questions they need to answer regularly. Yo
 - Which products have never been sold in a specific branch?
 - What is the sales performance of each sales rep broken down by quarter?
 
-## Phase 1 : OLTP Design
+# Phase 1 : OLTP 
 
 ![alt text](images/OLTP_ERD.png)
 
@@ -57,3 +57,20 @@ The BI team has handed you a list of questions they need to answer regularly. Yo
 * **orders** — For orders, a dictionary mapping **employee IDs** to **branch IDs** was created to maintain consistency, as it would not make sense for a customer to purchase from an employee who works at a different branch. Additionally, `date_time_between()` was used to generate timestamps spanning an entire year.
 
 * **order_items** — `unit_price` must be retrieved from the product table because it captures the product's price at the time of purchase, even if the product price changes later.
+
+# Phase 2 : OLAP
+
+## Design
+
+1. The `fact` table grain was made on product items, as the business questions track product item sales, not orders as a whole, because we can't track products and categories otherwise. The measures chosen are `quantity`, `unit_price`, and `line_total`, which is the derived revenue measure for a single fact row. I decided for it to be precomputed, as OLAP prioritizes query performance.
+
+2. Dimensions:
+    * **dim_product** — the category is folded here (denormalized).
+    * **dim_branch** — the region is folded here (denormalized).
+    * **dim_customer**
+    * **dim_employee**
+    * **dim_time** — unlike category and region ,time stayed separated from the fact timestamp, as it also will have week, month, and quarter precalculations.
+
+3. Notes : 
+    * The main reason for these changes is that OLAP is optimized for reads, unlike OLTP, which is optimized for frequent writes. This is why a denormalized version was chosen, reducing the maximum joins from 6 to 4.
+   
