@@ -73,4 +73,17 @@ The BI team has handed you a list of questions they need to answer regularly. Yo
 
 3. Notes : 
     * The main reason for these changes is that OLAP is optimized for reads, unlike OLTP, which is optimized for frequent writes. This is why a denormalized version was chosen, reducing the maximum joins from 6 to 4.
-   
+### SCD Type 2 & Schema Finalization
+1. The SCD Type 2 investigation: As category_id / category can change, a surrogate key was made to preserve historical data. For example, a product can be reclassified from "Toys" to "Electronics" and vice versa; to keep the integrity of past analytics, this historical data needs to be preserved.
+
+2. dim_product table: A surrogate key needs to be made, as product_id or any type of natural key would be redundant or complicated. Hence, I added valid_from, valid_to, and the is_current flag to indicate the validity of the product. Also, price and branch_id were candidates for SCD Type 2, but I ruled them out because they were already captured in the fact table.
+
+3. dim_branch.region_id: The same case of SCD Type 2 happens here, but I chose to ignore it as it is unrealistic for a branch to change its region.
+
+4. Surrogate keys: I decided after this to make all columns use surrogate keys, as it is best practice to make the structure consistent and the queries easier for the stakeholders, which is the main point of a data warehouse.
+
+5. Degenerate dimension: order_id is kept in fact_retail for OLTP traceability.
+
+6. fact_retail: line_total is a generated column, which is best for a calculated column.
+
+7. Schema structure: All of this was made in a separate dw schema, and dw. was prefixed on each of the tables in the DDL script, which is safer than relying on the search path.
