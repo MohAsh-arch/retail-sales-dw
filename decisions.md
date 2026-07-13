@@ -61,6 +61,7 @@ The BI team has handed you a list of questions they need to answer regularly. Yo
 # Phase 2 : OLAP
 
 ## Design
+![alt text](images/retail_OLAP.png)
 
 1. The `fact` table grain was made on product items, as the business questions track product item sales, not orders as a whole, because we can't track products and categories otherwise. The measures chosen are `quantity`, `unit_price`, and `line_total`, which is the derived revenue measure for a single fact row. I decided for it to be precomputed, as OLAP prioritizes query performance.
 
