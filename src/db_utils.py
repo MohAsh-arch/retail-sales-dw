@@ -1,5 +1,24 @@
 from psycopg2.extras import execute_values
+import psycopg2
+import os 
+from dotenv import load_dotenv
 
+def db_connect():
+    load_dotenv()
+
+    try : 
+        conn = psycopg2.connect(
+            host="localhost",
+            port=int(os.environ["DB_PORT"]),
+            database=os.environ["POSTGRES_DB"],
+            user=os.environ["POSTGRES_USER"],
+            password=os.environ["POSTGRES_PASSWORD"]
+            )
+        
+        print("connection successfully ")
+        return conn
+    except Exception as e:
+        print(f"couldn't connect to the database because : {e}") 
 def get_list_of_column(cur,table_name ,column_name):
     cur.execute(f'SELECT {column_name} FROM {table_name}')
     tuples = cur.fetchall()

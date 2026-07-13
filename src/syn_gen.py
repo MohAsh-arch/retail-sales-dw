@@ -1,7 +1,7 @@
 import  psycopg2 
 import os
 from dotenv import load_dotenv
-from db_utils import insertion, empty_check, get_list_of_column
+from db_utils import insertion, empty_check, get_list_of_column , db_connect
 import random
 from faker import Faker
 from faker_commerce import Provider
@@ -12,20 +12,7 @@ from collections import defaultdict
 random.seed(42)
 Faker.seed(42)
 
-load_dotenv()
-
-try : 
-    conn = psycopg2.connect(
-        host="localhost",
-        port=int(os.environ["DB_PORT"]),
-        database=os.environ["POSTGRES_DB"],
-        user=os.environ["POSTGRES_USER"],
-        password=os.environ["POSTGRES_PASSWORD"]
-        )
-    
-    print("connection successfully ")
-except Exception as e:
-    print(f"couldn't connect to the database because : {e}") 
+conn = db_connect()
 
 cur = conn.cursor()
 
