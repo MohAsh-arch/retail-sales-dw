@@ -19,6 +19,9 @@ def db_connect():
         return conn
     except Exception as e:
         print(f"couldn't connect to the database because : {e}") 
+
+
+
 def get_list_of_column(cur,table_name ,column_name):
     cur.execute(f'SELECT {column_name} FROM {table_name}')
     tuples = cur.fetchall()
@@ -43,3 +46,21 @@ def insertion(conn , cursor, table_name, insert_column, values, on_conflict = Tr
         query = f"""INSERT INTO {table_name} ({insert_column}) VALUES %s"""
     # saving by batches 
     execute_values(cursor, query, values)
+
+
+def key_id(cur,id_col,key_col,table_name,condition=''):
+    cur.execute(f'SELECT {id_col},{key_col} FROM {table_name} {condition}')
+    id_key_tuples = cur.fetchall()
+    dict_id_key = dict()
+
+    for id, key in id_key_tuples:
+        dict_id_key[id]=key
+    
+
+    return dict_id_key
+    
+    
+
+
+
+

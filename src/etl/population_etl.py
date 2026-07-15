@@ -2,7 +2,7 @@ from datetime import timedelta ,date
 import sys
 from pathlib import Path
 sys.path.append(str(Path(__file__).resolve().parent.parent))
-from db_utils import insertion, empty_check, get_list_of_column , db_connect
+from db_utils import insertion, empty_check, get_list_of_column , db_connect , key_id
 
 
 
@@ -84,6 +84,44 @@ if empty_check(conn,cur,'dw.dim_product'):
     
     dim_product_ins_column = 'product_id,category_id,category_name,name,price,valid_from,valid_to,is_current'
     insertion(conn,cur,'dw.dim_product',dim_product_ins_column, product_olap_tuples,on_conflict=False)
+
+#--- fact_retail population ---
+
+if empty_check(conn,cur,'dw.fact_retail'):
+    product_key_id = key_id(cur,'product_id','product_key','dw.dim_product','WHERE is_current = True')
+    branch_key_id = key_id(cur,'branch_id','branch_key','dw.dim_branch')
+    customer_key_id = key_id(cur,'customer_id','customer_key','dw.dim_customer')
+    employee_key_id = key_id(cur,'employee_id','employee_key','dw.dim_employee')
+
+    cur.execute(''' SELECT  o.order_id,
+                            o.customer_id,
+                            o.order_timestamp,
+                            o.branch_id,
+                            o.employee_id,
+                            oi.product_id,
+                            oi.quantity,
+                            oi.unit_price
+                FROM orders o join 
+                order_items oi on o.order_id = oi.order_id
+    ''')
+
+    join_list_of_tuples = cur.fetchall()
+    fact_list_of_tuples = []
+
+    for tuple_ in join_list_of_tuples:
+        product_key = product_key_id[tuple_[5]]
+        branch_key = branch_key_id[tuple_[3]]
+        customer_key = customer_key_id[tuple_[1]]
+        employee_key = employee_key_id.get(tuple_[4]) # i use get method here because it return none and employee_id are nullable which will not produce an error because regular method will return empty
+        order_id = tuple_[0]
+        quantity = tuple_[6]
+        date_key = int(tuple_[2].strftime("%Y%m%d"))
+        fact_list_of_tuples.append((date_key,product_key,branch_key,customer_key,employee_key,order_id,quantity,tuple_[7]))
+    insert_columns = 'date_key, product_key, branch_key, customer_key, employee_key, order_id, quantity, unit_price'
+    insertion(conn, cur,'dw.fact_retail',insert_columns,fact_list_of_tuples,on_conflict=False)
+
+
+
 
 conn.commit()
 
