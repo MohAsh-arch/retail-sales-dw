@@ -1,0 +1,6 @@
+psycopg2-binary
+faker
+faker-commerce
+python-dotenv
+streamlit
+pandas

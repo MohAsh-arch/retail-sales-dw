@@ -1,2 +1,0 @@
-pip install faker psycopg2-binary
-pip install faker-commerce
